@@ -20,8 +20,10 @@ namespace myTiles {
 `
 }
 scene.onHitWall(SpriteKind.Enemy, function (sprite) {
-	
+    setDirection(chooseDirection())
 })
+let direction = 0
+let mySprite: Sprite = null
 tiles.setTilemap(tiles.createTilemap(
             hex`1000100001010101010101010101010101010101010000000000000000000000000001010100010001000100010001000100010101000100010001000100010001000101010001000100010001000100010001010100010001000100010001000100010101000100010001000100010001000101010000000000000000000000000001010100010001000100010001000100010101000100010001000100010001000101010001000100010001000100010001010100010001000100010001000100010101000100010001000100010001000101010001000100010001000100010001010100000000000000000000000000010101010101010101010101010101010101`,
             img`
@@ -45,7 +47,7 @@ tiles.setTilemap(tiles.createTilemap(
             [myTiles.tile0,sprites.builtin.brick],
             TileScale.Sixteen
         ))
-let mySprite = sprites.create(img`
+mySprite = sprites.create(img`
 . . . . . . . . . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . . . . . . . . . 
@@ -72,32 +74,26 @@ let mySprite = sprites.create(img`
 . . . . . . . . . . . . . . . . . . . . . . . . 
 `, SpriteKind.Enemy)
 mySprite.setVelocity(50, 50)
-let direction = 0
 scene.cameraFollowSprite(mySprite)
-game.onUpdateInterval(100, function () {
-    if (direction == 0) {
-        if (mySprite.tileKindAt(TileDirection.Right, sprites.builtin.brick)) {
-            direction = Math.randomRange(0, 3)
-        } else {
-            mySprite.setVelocity(50, 0)
-        }
-    } else if (direction == 1) {
-        if (mySprite.tileKindAt(TileDirection.Left, sprites.builtin.brick)) {
-            direction = Math.randomRange(0, 3)
-        } else {
-            mySprite.setVelocity(-50, 0)
-        }
-    } else if (direction == 2) {
-        if (mySprite.tileKindAt(TileDirection.Bottom, sprites.builtin.brick)) {
-            direction = Math.randomRange(0, 3)
-        } else {
-            mySprite.setVelocity(0, 50)
-        }
-    } else if (direction == 3) {
-        if (mySprite.tileKindAt(TileDirection.Top, sprites.builtin.brick)) {
-            direction = Math.randomRange(0, 3)
-        } else {
-            mySprite.setVelocity(0, -50)
+function chooseDirection() {
+    while (true) {
+        let direction2: CollisionDirection = Math.randomRange(0, 3)
+        if (!mySprite.isHittingTile(direction2)) {
+            return direction2;
         }
     }
+}
+function setDirection(direction: CollisionDirection) {
+    if (direction == CollisionDirection.Right) {
+        mySprite.setVelocity(50, 0)
+    } else if (direction == CollisionDirection.Left) {
+        mySprite.setVelocity(-50, 0)
+    } else if (direction == CollisionDirection.Bottom) {
+        mySprite.setVelocity(0, 50)
+    } else if (direction == CollisionDirection.Top) {
+        mySprite.setVelocity(0, -50)
+    }
+}
+game.onUpdateInterval(2000, function () {
+	
 })
