@@ -59,9 +59,10 @@ namespace myTiles {
 }
 let mySprite: Sprite = null
 let direction = 0
+let direction2: TileDirection = TileDirection.Top
 tiles.setTilemap(tiles.createTilemap(
-            hex`1000100001010101010101010101010101010101010200000000000000000000000001010100010001000100010001000100010101000100010001000100010001000101010001000100010001000100010001010100010001000100010001000100010101000100010001000100010001000101010000000000000000000000000001010100010001000100010001000100010101000100010001000100010001000101010001000100010001000100010001010100010001000100010001000100010101000100010001000100010001000101010001000100010001000100010001010100000000000000000000000000010101010101010101010101010101010101`,
-            img`
+    hex`1000100001010101010101010101010101010101010200000000000000000000000001010100010001000100010001000100010101000100010001000100010001000101010001000100010001000100010001010100010001000100010001000100010101000100010001000100010001000101010000000000000000000000000001010100010001000100010001000100010101000100010001000100010001000101010001000100010001000100010001010100010001000100010001000100010101000100010001000100010001000101010001000100010001000100010001010100000000000000000000000000010101010101010101010101010101010101`,
+    img`
                 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
                 2 . . . . . . . . . . . . . 2 2
                 2 . 2 . 2 . 2 . 2 . 2 . 2 . 2 2
@@ -79,9 +80,9 @@ tiles.setTilemap(tiles.createTilemap(
                 2 . . . . . . . . . . . . . 2 2
                 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
             `,
-            [myTiles.tile0,sprites.builtin.brick,myTiles.tile3,myTiles.tile7],
-            TileScale.Sixteen
-        ))
+    [myTiles.tile0, sprites.builtin.brick, myTiles.tile3, myTiles.tile7],
+    TileScale.Sixteen
+))
 mySprite = sprites.create(img`
     . . . . . . f f f f . . . . . .
     . . . . f f f 2 2 f f f . . . .
@@ -132,7 +133,24 @@ myEnemy.setFlag(SpriteFlag.ShowPhysics, false)
 scene.cameraFollowSprite(mySprite)
 function chooseDirection() {
     while (true) {
-        let direction2: TileDirection = Math.randomRange(0, 3)
+        let random = Math.randomRange(0, 8)
+        switch (random) {
+            case 0:
+                direction2 = TileDirection.Left
+                break
+            case 1:
+                direction2 = TileDirection.Right
+                break
+            case 2:
+                direction2 = TileDirection.Top
+                break
+            case 3:
+                direction2 = TileDirection.Bottom
+                break
+            default:
+                break
+        }
+        // let direction2: TileDirection = Math.randomRange(0, 3)
         if (!myEnemy.tileKindAt(direction2, sprites.builtin.brick)) {
             return direction2;
         }
@@ -151,5 +169,5 @@ function setDirection(direction: TileDirection) {
 }
 game.onUpdateInterval(500, function () {
     setDirection(chooseDirection())
-tiles.setTileAt(tiles.getTileLocation(myEnemy.x / 16, myEnemy.y / 16), myTiles.tile7)
+    tiles.setTileAt(tiles.getTileLocation(myEnemy.x / 16, myEnemy.y / 16), myTiles.tile7)
 })
